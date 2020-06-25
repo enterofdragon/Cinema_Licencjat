@@ -1,0 +1,103 @@
+{% extends 'worker/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'worker/style.css' %}">
+{% endblock %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    {% if showtime.start_date > time_now %}
+        <a href="{% url 'showtime-update-worker' showtime.showtime_id %}">Aktualizuj informacje o seansie</a>
+    {% endif %}
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <a href="{% url 'showtime-delete-worker' showtime.showtime_id %}">Usuń seans</a>
+    {% endif %}
+    <br><br>
+    <a href="{% url 'movie-details-worker' showtime.movie_id.movie_id %}">Przejdź do szczegółów filmu</a>
+    <br><br>
+
+    <img src="{{ showtime.movie_id.thumbnail.url }}" alt="{{ showtime.movie_id.title }}" width="200" height="285"/><br>
+    {{ showtime.movie_id.title|title }}<br>
+    <b>data seansu:</b>
+    {{ showtime.start_date| time:"H:i" }}
+    {{ showtime.start_date| date:"d.m.Y" }} r.-
+    {{ showtime.end_date| time:"H:i" }}
+    {{ showtime.end_date| date:"d.m.Y" }} r.<br>
+    <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br>
+    <hr>
+    <h3>Rezerwacje na seans:</h3>
+    {#    rezerwaja mozliwa tylko, gdy seans sie jeszcze nie odbyl#}
+    {% if showtime.start_date > time_now %}
+        <a href="{% url 'reservation-form-worker' showtime.showtime_id %}">Dodaj rezerwację</a>
+    {% endif %}
+    <br>
+    <table class="table-striped">
+        <thead style="color: darkblue">
+        <th>ID &nbsp</th>
+        <th>Imię i Nazwisko &nbsp</th>
+        <th>Do zapłaty</th>
+        <th>Opłacona &nbsp</th>
+        <th>Potwierdzona &nbsp</th>
+        <th>Data rezerwacji &nbsp</th>
+        <th>{% if showtime.start_date > time_now %}Opłacenie/Potwierdzenie &nbsp{% endif %}</th>
+        <th>{% if showtime.start_date > time_now %}Edycja &nbsp{% endif %}</th>
+        <th>{% if showtime.start_date > time_now %}Usuwanie &nbsp{% endif %}</th>
+        </thead>
+        {% for reservation in reservations %}
+            <tr>
+                <td>{{ forloop.counter }}. {{ reservation.reservation_id }} &nbsp</td>
+                <td>{{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }}
+                    &nbsp &nbsp
+                </td>
+                <td>{{ reservation.cost }} PLN</td>
+                {% if not reservation.paid %}
+                    <td> Nie</td>
+                {% else %}
+                    <td>Tak</td>
+                {% endif %}
+                {% if not reservation.confirmed %}
+                    <td> Nie</td>
+                {% else %}
+                    <td>Tak</td>
+                {% endif %}
+                <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
+                <td>{% if showtime.start_date > time_now %}
+                    <a href="{% url 'reservation-confirm-pay-worker' reservation.reservation_id %}">Opłać/Potwierdź</a>
+                {% endif %}
+                </td>
+                <td>
+                    {% if showtime.start_date > time_now %}
+                        <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if showtime.start_date > time_now %}
+                        <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="9">
+                    <sup id="details{{ forloop.counter }}" onclick="show_hide({{ forloop.counter }})">Pokaż
+                        szczegóły</sup><br>
+                    <div id="tickets{{ forloop.counter }}" style="display: none">
+                        {% for ticket in tickets %}
+                            {% if reservation.client_id == ticket.client_id %}
+                                Miejsce: {{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} -
+                                {{ ticket.tickettype_id.type }} {{ ticket.price }}<br>
+                            {% endif %}
+                        {% endfor %}
+                        <b>Email</b> {{ reservation.client_id.email }} <br>
+                        <b>Telefon</b> {{ reservation.client_id.phone_number }}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        <script src="{% static 'worker/js/seanse/ukryj_pokaz_bilety.js' %}"></script>
+    </table>
+
+{% endblock %}

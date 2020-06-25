@@ -1,0 +1,67 @@
+{% extends 'client/base.html' %}
+{% block head %}
+    <title>Kontakt</title>
+    <style>
+        body {
+
+            min-height: 100%;
+        }
+
+        .container-card {
+            margin-top: 100px;
+            margin-bottom: 200px;
+            padding-bottom: 10px;
+            margin-left: 300px;
+            margin-right: 300px;
+            opacity: 90%;
+        }
+
+        h2.formularz {
+            color: darkslategrey;
+            font-size: x-large;
+            text-align: center;
+            margin-top: 6%;
+            letter-spacing: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: grey;
+        }
+
+        a:hover {
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            letter-spacing: 5px;
+            font-family: "Nova Round";
+        }
+    </style>
+{% endblock %}
+{% block logo-text %}
+    <h1 class="logo-text">Kontakt</h1>
+{% endblock %}
+{% block content %}
+    <div class="container-card">
+        <div class="card" style="height:700px ;background: darkgray;box-shadow:0 10px 6px -6px black ">
+            <div class="card-body">
+                <h2 class="formularz">
+        <span>
+            Adres: <br>
+            <h1 class="font-weight-light">Przykładowy adres </h1> <br>
+            Telefon: <br>
+            <h1 class="font-weight-light">  123456789 <br> <br> </h1>
+            E-mail: <br>
+              <h1 class="font-weight-light">  przykladowy@email.pl <br> <br> </h1>
+            Strona WWW: <br>
+              <h1 class="font-weight-light"> przykladowastrona.pl </h1>
+            <div style="height:600px"></div>
+        </span>
+                </h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'worker/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <form action="" method="post" id="ticket_no">
+        {% csrf_token %}
+        <table class="table-striped">
+            {{ client_form|crispy }}
+            {{ r_form|crispy }}
+            {{ ticket_form|crispy }}
+        </table>
+        <button class="btn btn-primary" type="submit" value="Zatwierdź">Zatwierdź</button>
+    </form>
+    <br><br>
+
+    <form action="" method="post" id="ticket_html_form">
+        {% csrf_token %}
+        <label>Edytuj ilość biletów:
+            <select form="ticket_html_form" name="ticket_select">
+                {% for i in ticket_number %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <input type="hidden" name="ticket_num">
+        <button class="btn btn-primary" type="submit" value="Dodaj">Dodaj</button>
+    </form>
+
+{% endblock %}

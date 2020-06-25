@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{#        <link rel="stylesheet" href="{% static 'client/style.css' %}">#}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Nova+Round&display=swap">
+
+        <style>
+            body {
+                {#background: url({% static 'client/images/back1.jpg' %}) no-repeat center center fixed;#}
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                background-size: cover;
+                -o-background-size: cover;
+            }
+
+            .container {
+                font-family: 'Nova Round', cursive;
+                font-size: 25px;
+            }
+        </style>
+        <title>Anulowanie rezerwacji</title>
+
+    </head>
+<body>
+<center>
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    <h3>Aby zrezygnować z rezerwacji prosimy kliknąć poniższy przycisk.</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br>
+        <button class="btn btn-primary" type="submit">Zrezygnuj</button>
+    </form>
+    <br><br>
+    <h3>Dane rezerwacji:</h3>
+    <table>
+        <tr>
+            <th>Seans</th>
+            <td>{{ reservation.showtime_id }}</td>
+        </tr>
+
+        <tr>
+            <th>
+                Imię i nazwisko
+            </th>
+            <td>
+                {{ reservation.client_id.first_name }}
+                {{ reservation.client_id.last_name }}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Adres Email
+            </th>
+            <td>
+                {{ reservation.client_id.email }}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Do zapłaty
+            </th>
+            <td>
+                {{ reservation.cost }} PLN
+            </td>
+        </tr>
+    </table>
+    <br><br>
+    <h3>Miejsca:</h3>
+    <table>
+        <tr>
+            <th>Rząd</th>
+            <th>Miejsce</th>
+        </tr>
+        {% for i in  reservation.ticket_id.iterator %}
+            <tr>
+                <td>{{ i.seat_id.row_number }}</td>
+                <td>{{ i.seat_id.seat_number }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</center>
+</body>
+</html>
